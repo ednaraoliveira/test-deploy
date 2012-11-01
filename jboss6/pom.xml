@@ -16,7 +16,7 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-jsf-parent</artifactId>
-		<version>2.3.0-SNAPSHOT</version>
+		<version>2.3.0</version>
 	</parent>
 
 	<dependencies>
@@ -29,9 +29,9 @@
 		<!--
 		-->
 		<dependency>
-		    <groupId>br.gov.frameworkdemoiselle</groupId>
-		    <artifactId>demoiselle-jta</artifactId>
-		    <scope>compile</scope>
+			<groupId>br.gov.frameworkdemoiselle</groupId>
+			<artifactId>demoiselle-jta</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.primefaces</groupId>
@@ -43,25 +43,12 @@
 			<artifactId>powermock-api-easymock</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
 		<dependency>
 			<groupId>br.gov.frameworkdemoiselle.component</groupId>
 			<artifactId>demoiselle-junit</artifactId>
 			<scope>test</scope>
-			<version>2.3.0-RC2-SNAPSHOT</version>
+			<version>2.3.0</version>
 		</dependency>
-		
 	</dependencies>
-
-	<repositories>
-		<repository>
-			<id>demoiselle.sourceforge.net-release</id>
-			<url>http://demoiselle.sourceforge.net/repository/release</url>
-		</repository>
-		<repository>
-			<id>snapshot.sourceforge.net-release</id>
-			<url>http://demoiselle.sourceforge.net/repository/snapshot</url>
-		</repository>
-	</repositories>
 
 </project>
