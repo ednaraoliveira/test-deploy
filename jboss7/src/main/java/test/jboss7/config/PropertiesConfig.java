@@ -39,7 +39,7 @@ package test.jboss7.config;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-@Configuration(resource="system")
+@Configuration(resource="system", prefix="teste.")
 public class PropertiesConfig {
 
 	private String backgroundColor;
