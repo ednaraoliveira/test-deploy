@@ -9,7 +9,6 @@ import test.glassfish3.config.PropertiesConfig;
 import test.glassfish3.domain.Bookmark;
 import test.glassfish3.message.InfoMessages;
 import test.glassfish3.persistence.BookmarkDAO;
-import test.glassfish3.security.Login;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
@@ -34,8 +33,8 @@ public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
 	@Inject
 	PropertiesConfig propertiesConfig;
 	
-	@Inject
-	Login login;
+//	@Inject
+//	Login login;
 	
 	@Inject
 	private MessageContext messageContext;
@@ -109,10 +108,10 @@ public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
 	
 	public void logar() {
 		logger.info("LOGANDO...");
-		login.setLogin("admin");
-		login.setPassword("admin");
-		login.setRole("admin");
-		securityContext.login();
+//		login.setLogin("admin");
+//		login.setPassword("admin");
+//		login.setRole("admin");
+//		securityContext.login();
 	}
 
 	
