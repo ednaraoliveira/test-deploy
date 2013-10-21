@@ -1,7 +1,5 @@
 package test.glassfish3.security;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
 import br.gov.frameworkdemoiselle.security.Authorizer;
