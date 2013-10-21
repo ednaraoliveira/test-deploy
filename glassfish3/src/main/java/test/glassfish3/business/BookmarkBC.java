@@ -5,23 +5,22 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 
+import test.glassfish3.config.PropertiesConfig;
+import test.glassfish3.domain.Bookmark;
+import test.glassfish3.message.InfoMessages;
+import test.glassfish3.persistence.BookmarkDAO;
+import test.glassfish3.security.Login;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.annotation.Priority;
-//import br.gov.frameworkdemoiselle.annotation.Startup;
-//import br.gov.frameworkdemoiselle.annotation.Shutdown;
 import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
 import br.gov.frameworkdemoiselle.lifecycle.Startup;
+import br.gov.frameworkdemoiselle.message.MessageContext;
 import br.gov.frameworkdemoiselle.security.RequiredRole;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.stereotype.BusinessController;
 import br.gov.frameworkdemoiselle.template.DelegateCrud;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
-
-import test.glassfish3.domain.Bookmark;
-import test.glassfish3.persistence.BookmarkDAO;
-import test.glassfish3.config.PropertiesConfig;
-import test.glassfish3.security.Login;
 
 @BusinessController
 public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
@@ -37,6 +36,9 @@ public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
 	
 	@Inject
 	Login login;
+	
+	@Inject
+	private MessageContext messageContext;
 	
 	@Inject
 	private Logger logger;
@@ -101,6 +103,7 @@ public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
 	public Bookmark insert(Bookmark bean) {
 		logger.info("Inserindo...");
 		super.insert(bean);
+		messageContext.add(InfoMessages.FAVORITO_INSERT_OK, bean.getDescription());
 		return bean;
 	}	
 	
