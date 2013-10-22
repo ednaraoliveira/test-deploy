@@ -9,11 +9,13 @@ import test.glassfish3.config.PropertiesConfig;
 import test.glassfish3.domain.Bookmark;
 import test.glassfish3.message.InfoMessages;
 import test.glassfish3.persistence.BookmarkDAO;
+import test.glassfish3.security.Login;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
 import br.gov.frameworkdemoiselle.lifecycle.Startup;
 import br.gov.frameworkdemoiselle.message.MessageContext;
+import br.gov.frameworkdemoiselle.security.Credentials;
 import br.gov.frameworkdemoiselle.security.RequiredRole;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.stereotype.BusinessController;
@@ -31,10 +33,10 @@ public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
 	private ResourceBundle bundle;
 	
 	@Inject
-	PropertiesConfig propertiesConfig;
+	private PropertiesConfig propertiesConfig;
 	
-//	@Inject
-//	Login login;
+	@Inject
+	private Credentials credentials;
 	
 	@Inject
 	private MessageContext messageContext;
@@ -98,7 +100,7 @@ public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
 	}	
 	
 	@Override
-	@RequiredRole("admin")
+	@RequiredRole("asadmin")
 	public Bookmark insert(Bookmark bean) {
 		logger.info("Inserindo...");
 		super.insert(bean);
@@ -107,7 +109,13 @@ public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
 	}	
 	
 	public void logar() {
-		logger.info("LOGANDO...");
+		if (securityContext.isLoggedIn()){
+			logger.info("LOGADO... " + securityContext.getUser().getId());
+			securityContext.getUser().setAttribute("role", "admin");
+		} else {
+			logger.info(">>>>>>>>>>. NAO <<<<<<<<<<<");
+		}
+		
 //		login.setLogin("admin");
 //		login.setPassword("admin");
 //		login.setRole("admin");
