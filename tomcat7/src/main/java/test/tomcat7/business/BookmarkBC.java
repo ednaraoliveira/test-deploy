@@ -99,7 +99,7 @@ public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
 	}	
 	
 	@Override
-	@RequiredRole("asadmin")
+	@RequiredRole("admin")
 	public Bookmark insert(Bookmark bean) {
 		logger.info("Inserindo...");
 		super.insert(bean);
