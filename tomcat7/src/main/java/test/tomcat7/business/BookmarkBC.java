@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import test.tomcat7.config.PropertiesConfig;
 import test.tomcat7.domain.Bookmark;
 import test.tomcat7.message.InfoMessages;
+import test.tomcat7.monitor.BookmarkMonitor;
 import test.tomcat7.persistence.BookmarkDAO;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.annotation.Priority;
@@ -45,6 +46,9 @@ public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
 	
 	@Inject
 	private SecurityContext securityContext;	
+	
+	@Inject
+	private BookmarkMonitor monitor;
 	
 	@Priority(3)
 	@Startup
@@ -99,7 +103,7 @@ public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
 	}	
 	
 	@Override
-	@RequiredRole("admin")
+	//@RequiredRole("admin")
 	public Bookmark insert(Bookmark bean) {
 		logger.info("Inserindo...");
 		super.insert(bean);
@@ -108,12 +112,13 @@ public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
 	}	
 	
 	public void logar() {
-		if (securityContext.isLoggedIn()){
-			logger.info("LOGADO... " + securityContext.getUser().getId());
-			securityContext.getUser().setAttribute("role", "admin");
-		} else {
-			logger.info(">>>>>>>>>>. NAO <<<<<<<<<<<");
-		}
+		monitor.countRegisteredBookmarks();
+//		if (securityContext.isLoggedIn()){
+//			logger.info("LOGADO... " + securityContext.getUser().getId());
+//			securityContext.getUser().setAttribute("role", "admin");
+//		} else {
+//			logger.info(">>>>>>>>>>. NAO <<<<<<<<<<<");
+//		}
 		
 //		login.setLogin("admin");
 //		login.setPassword("admin");

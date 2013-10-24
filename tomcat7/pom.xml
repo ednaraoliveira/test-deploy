@@ -34,6 +34,11 @@
 		</dependency>
 		-->
 		<dependency>
+		  	<groupId>br.gov.frameworkdemoiselle</groupId>
+  			<artifactId>demoiselle-jmx</artifactId>
+  			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
 			<scope>compile</scope>

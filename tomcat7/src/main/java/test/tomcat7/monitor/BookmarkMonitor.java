@@ -19,7 +19,15 @@ public class BookmarkMonitor{
  
     @ManagedOperation
     public int countRegisteredBookmarks(){
-        return bookmarkBC.findAll().size();
+        //return bookmarkBC.findAll().size();
+    	try {
+    		int teste = bookmarkBC.findAll().size();
+        	System.out.println(">>>>>>>>>>" + teste);	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	
+    	return 10;
     }
  
     public boolean getInsertBookmarkEnabled() {
