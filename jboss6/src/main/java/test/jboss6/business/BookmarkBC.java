@@ -3,18 +3,24 @@ package test.jboss6.business;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+
 import test.jboss6.config.PropertiesConfig;
 import test.jboss6.domain.Bookmark;
+import test.jboss6.message.InfoMessages;
 import test.jboss6.persistence.BookmarkDAO;
-import test.jboss6.security.Login;
+import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
 import br.gov.frameworkdemoiselle.lifecycle.Startup;
+import br.gov.frameworkdemoiselle.message.MessageContext;
+import br.gov.frameworkdemoiselle.security.Credentials;
 import br.gov.frameworkdemoiselle.security.RequiredRole;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.stereotype.BusinessController;
 import br.gov.frameworkdemoiselle.template.DelegateCrud;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @BusinessController
 public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
@@ -22,16 +28,26 @@ public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
 	private static final long serialVersionUID = 1L;
 	
 	@Inject
-	PropertiesConfig propertiesConfig;
+	@Name("messages-core")
+	private ResourceBundle bundle;
 	
 	@Inject
-	Login login;
+	private PropertiesConfig propertiesConfig;
+	
+	@Inject
+	private Credentials credentials;
+	
+	@Inject
+	private MessageContext messageContext;
+	
+	@Inject
+	private Logger logger;
 	
 	@Inject
 	private SecurityContext securityContext;	
 	
+	@Priority(3)
 	@Startup
-	@Priority(2)
 	@Transactional
 	public void load() {
 		if (findAll().isEmpty()) {
@@ -47,56 +63,62 @@ public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
 			insert(new Bookmark("Downloads", "http://download.frameworkdemoiselle.gov.br"));
 		}
 	}
-	
-	@Startup
 	@Priority(1)
+	@Startup
 	public void initServer() {
-		System.out.println("********************** INICIANDO O SERVIDOR ********************** ");
+		logger.info("********************** INICIANDO O SERVIDOR ********************** ");
 	}
-	
+	@Priority(2)
 	@Startup
-	@Priority(3)
 	public void executeGrant() {
-		System.out.println("********************** HABILITANDO AS PERMISSÕES ********************** ");
+		logger.info("********************** HABILITANDO AS PERMISSÕES ********************** ");
+	}
+	@Priority(4)
+	@Startup
+	public void readConfig() {
+		logger.info("********************** CONFIGURACOES ********************** ");
+		logger.info("backgroundColor....: " + propertiesConfig.getBackgroundColor());
+		logger.info("fontFamily.........: " + propertiesConfig.getFontFamily());
+		logger.info("fontColor..........: " + propertiesConfig.getFontColor());
+		logger.info("fontSize...........: " + propertiesConfig.getFontSize());
+		logger.info("textAlign..........: " + propertiesConfig.getAlign());
+		logger.info("resourseBundle.....: " + bundle.getString("button.test"));
 	}
 	
-	@Startup
-	@Priority(4)
-	public void readConfig() {
-		System.out.println("********************** CONFIGURACOES ********************** ");
-		System.out.println("backgroundColor....: " + propertiesConfig.getBackgroundColor());
-		System.out.println("fontFamily.........: " + propertiesConfig.getFontFamily());
-		System.out.println("fontColor..........: " + propertiesConfig.getFontColor());
-		System.out.println("fontSize...........: " + propertiesConfig.getFontSize());
-		System.out.println("textAlign..........: " + propertiesConfig.getAlign());
-	}	
 	
-	@Shutdown
 	@Priority(1)
+	@Shutdown
 	public void removeGrant() {
-		System.out.println("********************** DESABILITANDO AS PERMISSÕES ********************** ");
+		logger.info("********************** DESABILITANDO AS PERMISSÕES ********************** ");
 	}
 
-	@Shutdown
 	@Priority(2)
+	@Shutdown
 	public void stopServer() {
-		System.out.println("********************** FINALIZANDO O SERVIDOR ********************** ");
+		logger.info("********************** FINALIZANDO O SERVIDOR ********************** ");
 	}	
-	
 	
 	@Override
 	@RequiredRole("admin")
-	public void insert(Bookmark bean) {
-		System.out.println("Inserindo...");
+	public Bookmark insert(Bookmark bean) {
+		logger.info("Inserindo...");
 		super.insert(bean);
+		messageContext.add(InfoMessages.FAVORITO_INSERT_OK, bean.getDescription());
+		return bean;
 	}	
 	
 	public void logar() {
-		System.out.println("LOGANDO...");
-		login.setLogin("admin");
-		login.setPassword("admin");
-		login.setRole("admin");
-		securityContext.login();
+		if (securityContext.isLoggedIn()){
+			logger.info("LOGADO... " + securityContext.getUser().getId());
+			securityContext.getUser().setAttribute("role", "admin");
+		} else {
+			logger.info(">>>>>>>>>>. NAO <<<<<<<<<<<");
+		}
+		
+//		login.setLogin("admin");
+//		login.setPassword("admin");
+//		login.setRole("admin");
+//		securityContext.login();
 	}
 
 	
